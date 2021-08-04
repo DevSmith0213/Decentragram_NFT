@@ -1,22 +1,51 @@
 pragma solidity ^0.5.0;
 
 contract Decentragram {
-  string public name = "Decentragram";
+    string public name = "Decentragram";
 
-  //Store Images
-  mapping(uint => Image) public images;
+    //Store Images
+    uint256 public imageCount = 0;
+    mapping(uint256 => Image) public images;
 
-  struct Image {
-    uint id;
-    string hash;
-    string description;
-    uint tipAmount;
-    address payable author;
+    struct Image {
+        uint256 id;
+        string hash;
+        string description;
+        uint256 tipAmount;
+        address payable author;
+    }
+
+    event ImageCreated(
+        uint256 id,
+        string hash,
+        string description,
+        uint256 tipAmount,
+        address payable author
+    );
+
+    //Create Images
+    function uploadImage(string memory _imgHash, string memory _description) public {
+    // Make sure the image hash exists
+    require(bytes(_imgHash).length > 0);
+    // Make sure image description exists
+    require(bytes(_description).length > 0);
+    // Make sure uploader address exists
+    require(msg.sender!=address(0));
+
+    // Increment image id
+    imageCount ++;
+
+    // Add Image to the contract
+    images[imageCount] = Image(imageCount, _imgHash, _description, 0, msg.sender);
+    // Trigger an event
+    emit ImageCreated(imageCount, _imgHash, _description, 0, msg.sender);
   }
-
-  //Create Images
-  function uploadImage() public{
-    images[1] = Image(1, 'adc123', 'Hello, world!', 0, address(0x0));
-  }
-  //Tip Images
+    //Tip Images
+    function tipImageOwner(uint _id) public payable{
+        Image memory _image = images[_id];
+        // Fetch the author
+        address payable _author = _iamge.author;
+        // Pya the author by sending them Ether
+        address(_author).transfer(msg.value); 
+    }
 }
