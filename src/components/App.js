@@ -51,6 +51,7 @@ class App extends Component {
       this.setState({decentragram})
       const imagesCount = await decentragram.methods.imageCount().call()
       this.setState({imagesCount})
+      this.setState({loading:false})
     } else{
       window.alert('Decentragram contract not deployed to detected network.')
     }
